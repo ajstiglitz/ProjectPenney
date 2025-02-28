@@ -5,7 +5,6 @@ from src.processing import ALL_PATTERNS
 
 CSV_PATH = os.path.join('data', 'scores.csv')
 
-# The sole purpose of this module is to read in the already computed scores
 # and turn them into an 8x8 array of probabilities
 def calc_probability(csv_file:str = CSV_PATH):
     """

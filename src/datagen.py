@@ -5,8 +5,6 @@ from datetime import datetime as dt
 
 from src.helpers import PATH_DATA
 
-# This Module's sole purpose is to generate Decks and save them to disk
-
 PATH_TO_LOAD = os.path.join('data','to_load')
 HALF_DECK_SIZE = 26
 

@@ -12,9 +12,6 @@ FILE_PATTERN = 'seed*.npy'
 # all 8 of the possible patterns a player can choose
 ALL_PATTERNS = ['111', '101', '011', '001', '110', '100', '010', '000']
 
-# Sole purpose of this module is to comute scores for any files that have not yet been scored
-
-
 def find_seq(deck,
              pattern,
              start=0):
