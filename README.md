@@ -1,6 +1,4 @@
-
-### Title:
-#### ProjectPenney Overview
+### ProjectPenney Overview
 ---
 
 ### Description

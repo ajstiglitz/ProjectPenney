@@ -1,4 +1,5 @@
 import src.processing
+import pandas as pd
 import seaborn as sns # type: ignore
 
 
@@ -11,11 +12,13 @@ import seaborn as sns # type: ignore
 
 #show everything (other than the diagonal)
 
-def decks_heatmap():
+def decks_heatmap(csv_path):
     """
     Creates a heatmap for visualizing the ideas on the Penney Game Wiki 
     (should have similar probability results)
     """
+    data = pd.read_csv(csv_path,index_col=0)
+    g = sns.heatmap(data)
     
     return
 

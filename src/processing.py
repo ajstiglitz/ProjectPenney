@@ -1,67 +1,27 @@
 from src.datagen import PATH_DATA
-from src.datagen import get_decks
+import numpy as np
 from glob import glob
+import pandas as pd
 import os
 
 PATH_TO_LOAD = os.path.join('data','to_load')
 PATH_LOADED = os.path.join('data','loaded')
+SCORES_FILE = os.path.join('data','scores.csv')
 FILE_PATTERN = 'seed*.npy'
 
-# from binary to decimal
-def bin2dec(b: str):
-    return int(b,2)
+# all 8 of the possible patterns a player can choose
+ALL_PATTERNS = ['111', '101', '011', '001', '110', '100', '010', '000']
+
+# Sole purpose of this module is to comute scores for any files that have not yet been scored
 
 
-# from decimal to binary
-def dec2bin(n:int):
-    return f'{n:b}'
-
-
-#computing all the scores and all the modules are people with specific jobs
-
-#check if user inputted 1s and 0s (just for purpose of checking the player input)
-# URL
-# https://stackoverflow.com/questions/37578628/python-checking-if-string-consists-only-of-1s-and-0s
-def binary_check(pattern:str):
-    for character in pattern:
-        if character != '0' and character != '1':
-            print("not 0 or 1")
-            break
-    return
-
-# this function should be for patterns like RRR and RBR etc
-def player_patterns():
+def find_seq(deck,
+             pattern,
+             start=0):
     """
-    get the two patterns to be used for scoring the decks
+    Looks for the first occurence of a player pattern and gets the index    
     """
 
-    #set false
-    flag = False
-
-    while not flag:
-        pattern1 = input("Player 1's Pattern")
-        # check if only 3 characters
-        # if you want to make the pattern length possible for 4 cards, 3 changes to n
-        if len(pattern1) > 3:
-            print("Error: p1 pattern exceeds length")
-            break
-        # check if pattern is only made up of 1s or 0s
-        binary_check(pattern1)
-
-        
-        pattern2 = input("Player 2's Pattern")
-        #checking
-        if len(pattern2) > 3:
-            print("Error: p2 pattern exceeds length")
-            break
-        # check if pattern is only made up of 1s or 0s
-        binary_check(pattern2)
-        flag = True
-
-    return pattern1, pattern2
-
-# from office hours notebook
-def find_seq(deck, pattern, start=0):
     try:
         idx = deck.index(pattern, start)
     except:
@@ -69,29 +29,18 @@ def find_seq(deck, pattern, start=0):
     return idx
 
 
-# use 'wa' or 'a' for append if you want to add to json file
-#you use timestamp though so its fine (i think)
+def score_game(deck, 
+               p1:str, 
+               p2:str):
+    """
+    deck: a representation of a 52-card deck
+    p1: the three card pattern picked by player 1
+    p2: the three card pattern picked by player 2
 
-#scoring by tricks and total cards
-# using loops to score
-def scoring_decks(n_decks: int,
-                  seed:int,
-                  path_data: PATH_DATA
-                  ):
+    This function should score the game based on these patterns
+    """
 
-                 
-    #open the json file that has the deck you want to score
-    json_path = os.path.join(path_data,)
-    
-    decks = get_decks(n_decks,seed)
-
-
-
-
-    deck_str = ''.join(map(str, decks[0]))
-
-    # the patterns that the players inputted
-    p1,p2 = player_patterns()
+    deck_str = ''.join(map(str, deck))
 
     idx1 = find_seq(deck_str, p1)
     idx2 = find_seq(deck_str, p2)
@@ -123,48 +72,63 @@ def scoring_decks(n_decks: int,
         idx1 = find_seq(deck_str, p1, pos)
         idx2 = find_seq(deck_str, p2, pos)
 
+    return p1, p2, p1cards, p1tricks, p2cards, p2tricks
 
-    return p1cards, p1tricks, p2cards, p2tricks
 
-def load_data(self)-> None:
-    files = glob(os.path.join(PATH_TO_LOAD, FILE_PATTERN))
+def score_decks(decks_file:str):
+    """
+    decks_file: A file containing many decks
 
-    for file in files:
-        print(f'Loading {file}')
-        try:
-            # code to load the npy file
-            #if successful move to loaded folder
-            self.something()
+    The Function loops over all possible combinations of player choices as well as 
+    all the decks in the decks_file and computes the scores
+    """
 
-            os.rename(file, file.replace(PATH_TO_LOAD, PATH_LOADED))
-        except Exception as e:
-            raise type(e)(f'Problem loading file: {file}')
+    decks = np.load(decks_file)
 
-    return
+    scores = []
+    
+    for deck in decks:
+        for p1 in ALL_PATTERNS:
+            for p2 in ALL_PATTERNS:
+                if p1 != p2:
+                    p1, p2, p1cards, p1tricks, p2cards, p2tricks = score_game(deck, p1, p2)
+                    scores.append([p1, p2, p1cards, p1tricks, p2cards, p2tricks])
 
-def save_deck_score(path_data: PATH_DATA,
-                    path_,
-                    p1Pattern:str,
-                    p2Pattern:str
+    df_scores = pd.DataFrame(scores, columns=["p1pattern","p2pattern","p1cards","p1tricks","p2cards","p2tricks"])
+    return df_scores
 
-                    
-                    ):
+
+def update_score():
     """
     Saving the scores from the scoring_decks function
     """
 
-    npy_files = glob(os.path.join(PATH_TO_LOAD, FILE_PATTERN)) 
-    npy_path = os.path.join(path_data, npy_file)
+    files = glob(os.path.join(PATH_TO_LOAD, FILE_PATTERN))
 
-    with open(npy_path, 'a') as f:
-
-
-    #split the data folder into processed and unprocessed. So when adding the pattern and scoring it moves when done.
-
-    # save the pattern of p1 and p2 and the cards and tricks for each on the json file
-
-
-
-
-
+    #if there are no files in the to_load folder, returns "loaded" message for user
+    if not files:
+        print("loaded")
         return
+    
+    if os.path.exists(SCORES_FILE):
+        df_scores = pd.read_csv(SCORES_FILE)
+
+    else:
+        df_scores = pd.DataFrame(columns=["p1_pattern", "p2_pattern", "p1cards", "p1tricks", "p2cards", "p2tricks"])
+
+    for file in files:
+        # tells you which file is being loaded
+        print(f'Loading {file}')
+        try:
+            new_scores = score_decks(file)
+
+            df_scores = pd.concat([df_scores, new_scores], ignore_index=True)
+            df_scores.to_csv(SCORES_FILE, index=False)
+
+            # after loading, moves the location to the loaded folder and tells the user
+            os.rename(file, file.replace(PATH_TO_LOAD, PATH_LOADED))
+            print(f'File: {file} moved to: {PATH_LOADED}')
+        except Exception as e:
+            raise type(e)(f'Problem loading file: {file}')
+
+    return
