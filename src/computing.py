@@ -5,7 +5,7 @@ from src.processing import ALL_PATTERNS
 
 CSV_PATH = os.path.join('data', 'scores.csv')
 
-# and turn them into an 8x8 array of probabilities
+# calculate probabilities and turn them into an 8x8 array of probabilities
 def calc_probability(csv_file:str = CSV_PATH):
     """
     csv_file: it is the file which will be used to calculate probabilities.
@@ -14,8 +14,8 @@ def calc_probability(csv_file:str = CSV_PATH):
     Returns that probability in order for it to be used later in visualizations.
     """
 
-    df = pd.read_csv(CSV_PATH,dtype={'p1pattern': str, 'p2pattern': str})
-    df = df.drop(columns = ['p1_pattern','p2_pattern'])
+    df = pd.read_csv(CSV_PATH,
+                     dtype={'p1pattern': str, 'p2pattern': str})
 
     # creates 8x8 zero array to be filled in 
     prob_array = np.zeros((8,8))
@@ -29,13 +29,15 @@ def calc_probability(csv_file:str = CSV_PATH):
             # Filtering rows
             df_subset = df[(df['p1pattern'] == p1) & (df['p2pattern'] == p2)]
 
-            # Count Player 1 wins based on cards or tricks
-            p1_wins = ((df_subset['p1cards'] > df_subset['p2cards']) | 
-                       (df_subset['p1tricks'] > df_subset['p2tricks'])).sum()
-
-            # Compute probability
-            prob_array[i, j] = p1_wins / len(df_subset)
+            # makes sure to set to nan when the patterns are the same
+            if len(df_subset) == 0:
+                prob_array[i, j] = np.nan
+            else:
+                # Count Player 1 wins based on cards or tricks
+                p1_wins = ((df_subset['p1cards'] > df_subset['p2cards']) | 
+                           (df_subset['p1tricks'] > df_subset['p2tricks'])).sum()                
+                
+                # Compute probability
+                prob_array[i, j] = p1_wins / len(df_subset)
 
     return prob_array
-
-

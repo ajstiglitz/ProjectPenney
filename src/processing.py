@@ -13,7 +13,7 @@ FILE_PATTERN = 'seed*.npy'
 ALL_PATTERNS = ['111', '101', '011', '001', '110', '100', '010', '000']
 
 def find_seq(deck,
-             pattern,
+             pattern: str,
              start=0):
     """
     Looks for the first occurence of a player pattern and gets the index    
@@ -24,7 +24,6 @@ def find_seq(deck,
     except:
         return -1
     return idx
-
 
 def score_game(deck, 
                p1:str, 
@@ -51,22 +50,21 @@ def score_game(deck,
     # position in the deck
     pos = 0
 
-
-    idx1 = find_seq(deck_str, p1)
-    idx2 = find_seq(deck_str, p2)
-
     while (idx1 != -1) and (idx2 != -1):
         if idx1 < idx2:
-            # Player 1 found first
+            # Player 1 found first updates their cards and tricks score
             p1cards += idx1+3-pos
             p1tricks += 1
             pos = idx1+3
         elif idx2 < idx1:
+            #player 2 found first updates their cards and tricks score
             p2cards += idx2+3-pos
             p2tricks += 1
             pos = idx2+3
         
+        # find first occurrence of p1 pattern
         idx1 = find_seq(deck_str, p1, pos)
+        #find first occurence of p2 pattern
         idx2 = find_seq(deck_str, p2, pos)
 
     return p1, p2, p1cards, p1tricks, p2cards, p2tricks
@@ -80,24 +78,29 @@ def score_decks(decks_file:str):
     all the decks in the decks_file and computes the scores
     """
 
+    #loads in the decks_file
     decks = np.load(decks_file)
 
     scores = []
-    
+
+    # goes through all of the possible patterns and scores the probabilities for them    
     for deck in decks:
         for p1 in ALL_PATTERNS:
             for p2 in ALL_PATTERNS:
                 if p1 != p2:
                     p1, p2, p1cards, p1tricks, p2cards, p2tricks = score_game(deck, p1, p2)
+                    #appends those scores into the scores list
                     scores.append([p1, p2, p1cards, p1tricks, p2cards, p2tricks])
 
+    # puts the scores into a pandas dataframe
     df_scores = pd.DataFrame(scores, columns=["p1pattern","p2pattern","p1cards","p1tricks","p2cards","p2tricks"])
     return df_scores
 
 
 def update_score():
     """
-    Saving the scores from the scoring_decks function
+    Saving the scores from the scoring_decks function. Looks at the to_load folder to determine
+    what needs to have its score updated and once finished, moves the scored 
     """
 
     files = glob(os.path.join(PATH_TO_LOAD, FILE_PATTERN))
@@ -111,7 +114,7 @@ def update_score():
         df_scores = pd.read_csv(SCORES_FILE)
 
     else:
-        df_scores = pd.DataFrame(columns=["p1_pattern", "p2_pattern", "p1cards", "p1tricks", "p2cards", "p2tricks"])
+        df_scores = pd.DataFrame(columns=["p1pattern", "p2pattern", "p1cards", "p1tricks", "p2cards", "p2tricks"])
 
     for file in files:
         # tells you which file is being loaded
