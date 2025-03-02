@@ -24,7 +24,7 @@ def decks_heatmap(prob_matrix: pd.DataFrame,
     os.makedirs(figure_dir, exist_ok=True)
     
     # n is based on the n_decks from the datagen
-    title = f"Probability of Player 1 Winning When n_decks = {n_decks}"
+    title = f"Probability of Player Winning Based on Sequence When n_decks = {n_decks}"
 
     # creates the heatmap
     plt = sns.heatmap(prob_matrix, cmap="crest", annot=True, linewidths = 0.5, xticklabels=ALL_PATTERNS, yticklabels=ALL_PATTERNS)
