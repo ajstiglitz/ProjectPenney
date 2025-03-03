@@ -9,13 +9,17 @@ PATH_LOADED = os.path.join('data','loaded')
 SCORES_FILE = os.path.join('data','scores.csv')
 FILE_PATTERN = 'seed*.npy'
 
-# all 8 of the possible patterns a player can choose
+# All 8 of the possible patterns a player can choose
 ALL_PATTERNS = ['111', '101', '011', '001', '110', '100', '010', '000']
 
 def find_seq(deck,
              pattern: str,
              start=0):
     """
+    deck: the representation of the 52 card deck
+    pattern: a string representing the sequence that the player chose
+    start: the intial position
+
     Looks for the first occurence of a player pattern and gets the index    
     """
 
@@ -41,30 +45,30 @@ def score_game(deck,
     idx1 = find_seq(deck_str, p1)
     idx2 = find_seq(deck_str, p2)
     
-    # initializing total cards and tricks for players 1 and 2
+    # initializing the total cards and tricks for players 1 and 2
     p1cards = 0
     p1tricks = 0
     p2cards = 0
     p2tricks = 0
 
-    # position in the deck
+    # the position in the deck
     pos = 0
 
     while (idx1 != -1) and (idx2 != -1):
         if idx1 < idx2:
-            # Player 1 found first updates their cards and tricks score
+            # Player 1 found first, so their cards and tricks score updates
             p1cards += idx1+3-pos
             p1tricks += 1
             pos = idx1+3
         elif idx2 < idx1:
-            #player 2 found first updates their cards and tricks score
+            # Player 2 found first, so their cards and tricks score updates
             p2cards += idx2+3-pos
             p2tricks += 1
             pos = idx2+3
         
-        # find first occurrence of p1 pattern
+        # finding the first occurrence of p1 pattern
         idx1 = find_seq(deck_str, p1, pos)
-        #find first occurence of p2 pattern
+        #finding the first occurence of p2 pattern
         idx2 = find_seq(deck_str, p2, pos)
 
     return p1, p2, p1cards, p1tricks, p2cards, p2tricks
@@ -100,7 +104,7 @@ def score_decks(decks_file:str):
 def update_score():
     """
     Saving the scores from the scoring_decks function. Looks at the to_load folder to determine
-    what needs to have its score updated and once finished, moves the scored 
+    what needs to have its score updated, and once finished, moves the scored file
     """
 
     files = glob(os.path.join(PATH_TO_LOAD, FILE_PATTERN))

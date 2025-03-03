@@ -8,13 +8,13 @@ from src.computing import calc_probability
 ALL_PATTERNS = ['RRR', 'RBR', 'BRR', 'BBR', 'RRB', 'RBB', 'BRB', 'BBB']
 
 
-# create a heatmap that that uses the stored decks and scores rather than doing any kind of simulation itself
+# creates a heatmap that that uses the stored decks and scores, rather than doing any kind of simulation itself
 def decks_heatmap(prob_matrix: pd.DataFrame,
                   n_decks:int):
     """
     prob_matrix: takes the 8x8 probability matrix that was calculated 
     by calc_probability in computing.py
-    n_decks: the n_decks that was used for generating the decks. Used in the heatmap title.
+    n_decks: the n_decks number that was used for generating the decks. Used in the heatmap title.
     
     Creates a heatmap for visualizing the probability results calculated by calc_probability
     """
@@ -23,7 +23,7 @@ def decks_heatmap(prob_matrix: pd.DataFrame,
     figure_dir = "figures"  
     os.makedirs(figure_dir, exist_ok=True)
     
-    # n is based on the n_decks from the datagen
+    # n is based on the n_decks from the datagen.py file
     title = f"Probability of Player Winning Based on Sequence When n_decks = {n_decks}"
 
     # creates the heatmap
