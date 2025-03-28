@@ -59,15 +59,16 @@ def store_decks(n_decks: int,
     Seed and num_decks stored separately from random decks
     """
 
+    #here 10,000 means we are getting splits of 10,000 decks
+    # need to split the 
+    size_of_split = 10000
+
+    
     # Code to create a directory
     os.makedirs(PATH_TO_LOAD, exist_ok=True)
 
     # Creates a timestamp
     ts = timestamp()
-
-    # Name of the file that will be saved
-    npy_file = f"seed{seed}_decks{n_decks}_timestamp{ts}.npy"
-    npy_path = os.path.join(PATH_TO_LOAD, npy_file)
 
     json_path = os.path.join(path_data, 'settings.json')
     
@@ -78,11 +79,23 @@ def store_decks(n_decks: int,
     else:
         settings = {}
             
-    if npy_file in settings:
-        return settings
+#    if npy_file in settings:
+#        return settings
 
-    # Code to save the decks into the npy file
-    np.save(npy_path, result_decks)
+    split_num = (n_decks // size_of_split) + (1 if n_decks % size_of_split else 0)
+    
+    for i in range(split_num):
+        idx_start = i*size_of_split
+        idx_end = min((i + 1) * size_of_split, n_decks)
+
+        split_decks = result_decks[idx_start:idx_end]
+        
+        # Name of the file that will be saved
+        npy_file = f"seed{seed}_decks{n_decks}_split{i+1}_timestamp{ts}.npy"
+        npy_path = os.path.join(PATH_TO_LOAD, npy_file)
+    
+        # Code to save the decks into the npy file
+        np.save(npy_path, split_decks)
 
     # The information that gets saved into the .npy file
     settings[npy_file] = {}

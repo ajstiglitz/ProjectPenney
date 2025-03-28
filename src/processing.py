@@ -126,6 +126,7 @@ def update_score():
         try:
             new_scores = score_decks(file)
 
+            # dont use concat!!! 
             df_scores = pd.concat([df_scores, new_scores], ignore_index=True)
             df_scores.to_csv(SCORES_FILE, index=False)
 
