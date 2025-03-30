@@ -51,6 +51,10 @@ def score_game(deck,
     p2cards = 0
     p2tricks = 0
 
+    # initializing the draw trackers for when players 1 and 2 tie their games
+    draw_cards = 0
+    draw_tricks = 0
+
     # the position in the deck
     pos = 0
 
@@ -66,12 +70,19 @@ def score_game(deck,
             p2tricks += 1
             pos = idx2+3
         
+
+        # tracking draws for cards and tricks
+        if p1cards == p2cards:
+            draw_cards += 1
+        if p1tricks == p2tricks:
+            draw_tricks += 1
+
         # finding the first occurrence of p1 pattern
         idx1 = find_seq(deck_str, p1, pos)
         #finding the first occurence of p2 pattern
         idx2 = find_seq(deck_str, p2, pos)
 
-    return p1, p2, p1cards, p1tricks, p2cards, p2tricks
+    return p1, p2, p1cards, p1tricks, p2cards, p2tricks, draw_cards, draw_tricks
 
 
 def score_decks(decks_file:str):
@@ -92,12 +103,13 @@ def score_decks(decks_file:str):
         for p1 in ALL_PATTERNS:
             for p2 in ALL_PATTERNS:
                 if p1 != p2:
-                    p1, p2, p1cards, p1tricks, p2cards, p2tricks = score_game(deck, p1, p2)
+                    p1, p2, p1cards, p1tricks, p2cards, p2tricks, draw_cards, draw_tricks = score_game(deck, p1, p2)
                     #appends those scores into the scores list
-                    scores.append([p1, p2, p1cards, p1tricks, p2cards, p2tricks])
+                    scores.append([p1, p2, p1cards, p1tricks, p2cards, p2tricks, draw_cards, draw_tricks])
 
     # puts the scores into a pandas dataframe
-    df_scores = pd.DataFrame(scores, columns=["p1pattern","p2pattern","p1cards","p1tricks","p2cards","p2tricks"])
+    df_scores = pd.DataFrame(scores, columns=["p1pattern","p2pattern","p1cards",
+                                              "p1tricks","p2cards","p2tricks", "draw_cards", "draw_tricks"])
     return df_scores
 
 
@@ -118,7 +130,8 @@ def update_score():
         df_scores = pd.read_csv(SCORES_FILE)
 
     else:
-        df_scores = pd.DataFrame(columns=["p1pattern", "p2pattern", "p1cards", "p1tricks", "p2cards", "p2tricks"])
+        df_scores = pd.DataFrame(columns=["p1pattern","p2pattern","p1cards",
+                                              "p1tricks","p2cards","p2tricks", "draw_cards", "draw_tricks"])
 
     for file in files:
         # tells you which file is being loaded
@@ -126,7 +139,6 @@ def update_score():
         try:
             new_scores = score_decks(file)
 
-            # dont use concat!!! 
             df_scores = pd.concat([df_scores, new_scores], ignore_index=True)
             df_scores.to_csv(SCORES_FILE, index=False)
 

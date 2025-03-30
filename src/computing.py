@@ -18,7 +18,10 @@ def calc_probability(csv_file:str = CSV_PATH):
                      dtype={'p1pattern': str, 'p2pattern': str})
 
     # creates 8x8 zero array to be filled in 
-    prob_array = np.zeros((8,8))
+    card_prob_array = np.zeros((8,8))
+    trick_prob_array = np.zeros((8,8))
+    draw_cards_prob_array = np.zeros((8,8))
+    draw_tricks_prob_array = np.zeros((8,8))
 
     # Loops through all possible pattern combinations
     for i, p1 in enumerate(ALL_PATTERNS):
@@ -29,15 +32,17 @@ def calc_probability(csv_file:str = CSV_PATH):
             # Code for filtering rows
             df_subset = df[(df['p1pattern'] == p1) & (df['p2pattern'] == p2)]
 
-            # Code to set to NaN when the patterns are the same.
-            if len(df_subset) == 0:
-                prob_array[i, j] = np.nan
-            else:
-                # Count Player 1 wins based on cards or tricks
-                p1_wins = ((df_subset['p1cards'] > df_subset['p2cards']) | 
-                           (df_subset['p1tricks'] > df_subset['p2tricks'])).sum()                
+            
+            # Count Player 1 wins based on cards or tricks
+            p2_card_wins = (df_subset['p2cards'] > df_subset['p1cards']).sum()
+            p2_tricks_wins = (df_subset['p2tricks'] > df_subset['p1tricks']).sum()
+            draw_cards = df_subset['draw_cards'].sum()
+            draw_tricks = df_subset['draw_tricks'].sum()
                 
-                # Computes probability
-                prob_array[i, j] = p1_wins / len(df_subset)
+            # Computes probability
+            card_prob_array[i, j] = round((p2_card_wins / len(df_subset)),2)*100
+            trick_prob_array[i, j] = round((p2_tricks_wins/ len(df_subset)),2)*100
+            draw_cards_prob_array[i, j] = round((draw_cards / len(df_subset)))*100
+            draw_tricks_prob_array[i, j] = round((draw_tricks / len(df_subset)))*100
 
-    return prob_array
+    return card_prob_array, trick_prob_array, draw_cards_prob_array, draw_tricks_prob_array
