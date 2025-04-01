@@ -1,16 +1,19 @@
 import pandas as pd
-import seaborn as sns # type: ignore
+import seaborn as sns
 import matplotlib.pyplot as plt
 import os
 import numpy as np
 
 
-ALL_PATTERNS = ['RRR', 'RBR', 'BRR', 'BBR', 'RRB', 'RBB', 'BRB', 'BBB']
+ALL_PATTERNS = ['BBB', 'BBR', 'BRB', 'BRR', 'RBB', 'RBR', 'RRB', 'RRR']
 
 # code from professor's example
 def make_annotation(arr1, arr2) -> np.ndarray:
     '''
-    creates an Annotation for the heatmap.
+    arr1: An array used to create an annotation for a heatmap
+    arr2: A second array used to create an annotation for a heatmap
+
+    Creates an Annotation for the heatmap.
     When in use, it should have the numbers from arr1 and arr2
     in the form of: number(number)
     '''
@@ -30,8 +33,8 @@ def make_annotation(arr1, arr2) -> np.ndarray:
     return annot
 
 
-# creates a heatmap that that uses the stored decks and scores, 
-# rather than doing any kind of simulation itself
+# creates a heatmap that that uses the stored decks and scores 
+# Does not do any kind of simulation itself
 def card_heatmap(card_prob_matrix: np.ndarray,
                  draw_cards_prob_array: np.ndarray,
                  n_decks:int,
@@ -74,11 +77,14 @@ def card_heatmap(card_prob_matrix: np.ndarray,
                       yticklabels=ALL_PATTERNS,
                       ax=ax
                       )
+    
+    # sets the main title
     ax.set_title(f"My Chance to Win(Draw) by Cards \n N = {n_decks}")
 
+    # the plot title is the name for the .png file
     plot_title = f"Heatmap for the cards {n_decks}"
 
-
+    # sets the label names
     ax.set_xlabel('My Choice')
     ax.set_ylabel('Opponent Choice')
     
@@ -132,12 +138,14 @@ def tricks_heatmap(trick_prob_matrix: np.ndarray,
                       ax=ax
                       )
 
-   
+    # sets the main title   
     ax.set_title(f"My Chance to Win(Draw) by Tricks \n N = {n_decks}")
 
+    # sets the x and y labels
     ax.set_xlabel('My Choice')
     ax.set_ylabel('Opponent Choice')
     
+    # the title that the .png will be saved under
     plot_title = f"Heatmap for the tricks {n_decks}"
     
     # saves the heatmap into the figures folder

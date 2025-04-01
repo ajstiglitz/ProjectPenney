@@ -15,10 +15,10 @@ Link to Penney's Game Wiki: https://en.wikipedia.org/wiki/Penney%27s_game
 ---
 
 ### How to use the Project
-This project contains a .ipynb file called "WorkingCode" which walks you through the process of creating your decks, scoring them, and getting the probabilities.
+This project contains a main.py file which walks you through the process of creating your decks, scoring them, and getting the probabilities.
 - You can delete "settings", "scores", and the data in the "loaded" and "to load" folders if you want to start all of the tests over.
 - You can also simply run the decks and new tests will be added into the settings, which you then can re-run for updated results.
-- Make sure that when you are running the code for the visualization that you change the integer for n_decks to match the one you used to generate the decks so the title is correct.
+- Make sure that when you are running the code for the visualization that you change the integer for total_decks to match the one you used to generate the decks so the title is correct.
 
 ----
 
@@ -46,6 +46,7 @@ Here is a link to the UV website to learn how to install for yourself: https://d
         - Scoring the decks 
         - Saving the scores
         - And visualizing the probabilities with heatmap
+        - And code that is used by main.py that puts all the steps together
 
 ---
 
@@ -55,6 +56,7 @@ Here is a link to the UV website to learn how to install for yourself: https://d
 3. Helpers
 4. Processing
 5. Visualization
+6. Runcode
 
 ### 1) Computing
 The purpose of this file is to calculate the probability of the scores.
@@ -70,3 +72,6 @@ This file is for scoring the decks based on the player sequences.
 
 ### 5) Visualization
 This file has a function for showing a heatmap based on the probability of a player winning depending on their sequence choice. Later on, a second heatmap based on the probability of a choice resulting in a draw will be added.
+
+### 6) Runcode
+This file has two functions that are for the sole purpose of use for the main.py file. It puts together the code from the other .py files into one function or the other (the function for the visualizations has no calculations within it).
