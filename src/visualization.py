@@ -38,6 +38,7 @@ def make_annotation(arr1, arr2) -> np.ndarray:
 def card_heatmap(card_prob_matrix: np.ndarray,
                  draw_cards_prob_array: np.ndarray,
                  n_decks:int,
+                 seed:int,
                  gray_diagonal: bool = False
                 ):
     """
@@ -82,7 +83,7 @@ def card_heatmap(card_prob_matrix: np.ndarray,
     ax.set_title(f"My Chance to Win(Draw) by Cards \n N = {n_decks}")
 
     # the plot title is the name for the .png file
-    plot_title = f"Heatmap for the cards {n_decks}"
+    plot_title = f"Heatmap for the cards {n_decks} and seed {seed}"
 
     # sets the label names
     ax.set_xlabel('My Choice')
@@ -98,7 +99,8 @@ def card_heatmap(card_prob_matrix: np.ndarray,
 def tricks_heatmap(trick_prob_matrix: np.ndarray,
                    draw_tricks_prob_array: np.ndarray,
                    n_decks:int,
-                   gray_diagonal: bool = False
+                   seed:int,
+                   gray_diagonal: bool = False                   
                   ):
     """
     trick_prob_matrix: takes the 8x8 probability matrix for p2 trickss that was calculated 
@@ -146,7 +148,7 @@ def tricks_heatmap(trick_prob_matrix: np.ndarray,
     ax.set_ylabel('Opponent Choice')
     
     # the title that the .png will be saved under
-    plot_title = f"Heatmap for the tricks {n_decks}"
+    plot_title = f"Heatmap for the tricks {n_decks} and seed {seed}"
     
     # saves the heatmap into the figures folder
     figure_path = os.path.join(figure_dir,plot_title)

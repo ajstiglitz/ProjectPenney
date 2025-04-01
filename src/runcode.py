@@ -37,7 +37,8 @@ def get_visualizations(card_prob_matrix: np.ndarray,
                        trick_prob_array: np.ndarray,
                        draw_cards_prob_array: np.ndarray,
                        draw_tricks_prob_array: np.ndarray,
-                       total_decks: int
+                       total_decks: int,
+                       seed:int
                        ) -> None:
     """
     card_prob_matrix: the probability array that was calculated for player 2's chances of winning by cards
@@ -51,8 +52,8 @@ def get_visualizations(card_prob_matrix: np.ndarray,
     Takes the results from run_code and creates the two heatmaps for cards and tricks
     """
 
-    card_heatmap(card_prob_matrix, draw_cards_prob_array, total_decks, gray_diagonal=True)
+    card_heatmap(card_prob_matrix, draw_cards_prob_array, total_decks,seed, gray_diagonal=True)
 
-    tricks_heatmap(trick_prob_array, draw_tricks_prob_array, total_decks, gray_diagonal=True)
+    tricks_heatmap(trick_prob_array, draw_tricks_prob_array, total_decks,seed, gray_diagonal=True)
 
     return None

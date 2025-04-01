@@ -28,7 +28,7 @@ if __name__ == '__main__':
 
         if pause == "Y":
             #creates the heatmaps for cards and tricks
-            get_visualizations(card_prob_matrix, trick_prob_array, draw_cards_prob_array, draw_tricks_prob_array, total_decks)
+            get_visualizations(card_prob_matrix, trick_prob_array, draw_cards_prob_array, draw_tricks_prob_array, total_decks, seed)
 
         else:
             ("The End.")
